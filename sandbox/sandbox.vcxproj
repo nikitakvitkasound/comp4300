@@ -105,13 +105,16 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
       <AdditionalOptions>/w44365 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>C:\dev\libraries\SFML-2.6.2\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\dev\libraries\SFML-2.6.2\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-audio-d.lib;sfml-graphics-d.lib;sfml-main-d.lib;sfml-network-d.lib;sfml-system-d.lib;sfml-window-d.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -123,15 +126,18 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <ExternalWarningLevel>Level3</ExternalWarningLevel>
       <AdditionalOptions>/w44365 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>C:\dev\libraries\SFML-2.6.2\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\dev\libraries\SFML-2.6.2\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-audio.lib;sfml-graphics.lib;sfml-main.lib;sfml-network.lib;sfml-system.lib;sfml-window.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
