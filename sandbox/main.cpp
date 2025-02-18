@@ -1,24 +1,37 @@
-#include <SFML/Graphics.hpp>
+#include <iostream>
+//#include <format>
+
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
+
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+	sf::Window window(sf::VideoMode(800, 600), "Testing Event");
+	
+	while (window.isOpen())
+	{
+		sf::Event event;
 
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::KeyPressed)
+			{
+				std::cout << event.key.code << " is pressed . . .\n";
+			}
+			if (event.type == sf::Event::Closed)
+			{
+				std::cout << "Closing . . . \n";
+				window.close();
+			}
+			if (event.type == sf::Event::MouseMoved)
+			{
+				std::cout << "mouse x: " << event.mouseMove.x << "\n";
+				std::cout << "mouse y: " << event.mouseMove.y << "\n";
 
-        window.clear();
-        window.draw(shape);
-        window.display();
-    }
+			}
+		}
+	}
 
-    return 0;
+	return 0;
 }
