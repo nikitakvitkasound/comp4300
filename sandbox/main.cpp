@@ -31,8 +31,8 @@ int main()
 	const float OFFSET_BY_40{ 40.0f };
 	const float FLIP_TEXT_MOUSE_COEFF{ 0.95f }; // 0.95 == passing 95% of screen width or height
 
-	int mouse_pos_x{};
-	int mouse_pos_y{};
+	float mouse_pos_x{};
+	float mouse_pos_y{};
 
 	while (window.isOpen())
 	{
@@ -52,31 +52,32 @@ int main()
 			}
 			if (event.type == sf::Event::MouseMoved)
 			{
-				mouse_pos_x = event.mouseMove.x;
-				mouse_pos_y = event.mouseMove.y;
-				text_mouse_pos_x.setString(text_pre_pos_x + std::to_string(mouse_pos_x));
-				text_mouse_pos_y.setString(text_pre_pos_y + std::to_string(mouse_pos_y));
-				
+				mouse_pos_x = static_cast<float>(event.mouseMove.x);
+				mouse_pos_y = static_cast<float>(event.mouseMove.y);
+
 				if (mouse_pos_x > WIN_WIDTH * FLIP_TEXT_MOUSE_COEFF && mouse_pos_y > WIN_HEIGHT * FLIP_TEXT_MOUSE_COEFF)
 				{
-					text_mouse_pos_x.setPosition(static_cast<float>(mouse_pos_x) - OFFSET_BY_40, static_cast<float>(mouse_pos_y) - OFFSET_BY_20);
-					text_mouse_pos_y.setPosition(static_cast<float>(mouse_pos_x) - OFFSET_BY_40, static_cast<float>(mouse_pos_y) - OFFSET_BY_40);
+					text_mouse_pos_x.setPosition(mouse_pos_x - OFFSET_BY_40, mouse_pos_y - OFFSET_BY_20);
+					text_mouse_pos_y.setPosition(mouse_pos_x - OFFSET_BY_40, mouse_pos_y - OFFSET_BY_40);
 				}
 				else if (mouse_pos_x > WIN_WIDTH * FLIP_TEXT_MOUSE_COEFF)
 				{
-					text_mouse_pos_x.setPosition(static_cast<float>(mouse_pos_x) - OFFSET_BY_40, static_cast<float>(mouse_pos_y) + OFFSET_BY_5);
-					text_mouse_pos_y.setPosition(static_cast<float>(mouse_pos_x) - OFFSET_BY_40, static_cast<float>(mouse_pos_y) + OFFSET_BY_20);
+					text_mouse_pos_x.setPosition(mouse_pos_x - OFFSET_BY_40, mouse_pos_y + OFFSET_BY_5);
+					text_mouse_pos_y.setPosition(mouse_pos_x - OFFSET_BY_40, mouse_pos_y + OFFSET_BY_20);
 				}
 				else if (mouse_pos_y > WIN_HEIGHT * FLIP_TEXT_MOUSE_COEFF)
 				{
-					text_mouse_pos_x.setPosition(static_cast<float>(mouse_pos_x) + OFFSET_BY_15, static_cast<float>(mouse_pos_y) - OFFSET_BY_20);
-					text_mouse_pos_y.setPosition(static_cast<float>(mouse_pos_x) + OFFSET_BY_15, static_cast<float>(mouse_pos_y) - OFFSET_BY_40);
+					text_mouse_pos_x.setPosition(mouse_pos_x + OFFSET_BY_15, mouse_pos_y - OFFSET_BY_20);
+					text_mouse_pos_y.setPosition(mouse_pos_x + OFFSET_BY_15, mouse_pos_y - OFFSET_BY_40);
 				}
 				else
 				{
-					text_mouse_pos_x.setPosition(static_cast<float>(mouse_pos_x) + OFFSET_BY_15, static_cast<float>(mouse_pos_y) + OFFSET_BY_5);
-					text_mouse_pos_y.setPosition(static_cast<float>(mouse_pos_x) + OFFSET_BY_15, static_cast<float>(mouse_pos_y) + OFFSET_BY_20);
+					text_mouse_pos_x.setPosition(mouse_pos_x + OFFSET_BY_15, mouse_pos_y + OFFSET_BY_5);
+					text_mouse_pos_y.setPosition(mouse_pos_x + OFFSET_BY_15, mouse_pos_y + OFFSET_BY_20);
 				}
+
+				text_mouse_pos_x.setString(text_pre_pos_x + std::to_string(event.mouseMove.x)); // std::to_string(mouse_pos_x) leads to .0000000 precision
+				text_mouse_pos_y.setString(text_pre_pos_y + std::to_string(event.mouseMove.y));
 			}
 		}
 
