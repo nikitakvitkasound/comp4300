@@ -34,6 +34,44 @@ int main()
 	float mouse_pos_x{};
 	float mouse_pos_y{};
 
+	sf::ConvexShape z_cleveland;
+	z_cleveland.setPointCount(8);
+	z_cleveland.setPoint(0, sf::Vector2f(0.0f, 0.0f));
+	z_cleveland.setPoint(1, sf::Vector2f(100.0f, 0.0f));
+	z_cleveland.setPoint(2, sf::Vector2f(100.0f, 50.0f));
+	z_cleveland.setPoint(3, sf::Vector2f(150.0f, 50.0f));
+	z_cleveland.setPoint(4, sf::Vector2f(150.0f, 100.0f));
+	z_cleveland.setPoint(5, sf::Vector2f(50.0f, 100.0f));
+	z_cleveland.setPoint(6, sf::Vector2f(50.0f, 50.0f));
+	z_cleveland.setPoint(7, sf::Vector2f(0.0f, 50.0f));
+
+	z_cleveland.setOrigin(75.0f, 50.f);
+	z_cleveland.scale(0.5f, 0.5f);
+	z_cleveland.setPosition(300.0f, 200.0f);
+	z_cleveland.setFillColor(sf::Color::Green);
+
+	//
+	//sf::ConvexShape z_rhode{ z_cleveland };
+
+	//z_rhode.setPosition(400.0f, 200.f);
+	//z_rhode.setFillColor(sf::Color::Yellow);
+
+	sf::ConvexShape teewee;
+	teewee.setPointCount(8);
+	teewee.setPoint(0, sf::Vector2f(0.0f, 50.0f));
+	teewee.setPoint(1, sf::Vector2f(50.0f, 50.0f));
+	teewee.setPoint(2, sf::Vector2f(50.0f, 0.0f));
+	teewee.setPoint(3, sf::Vector2f(100.0f, 0.0f));
+	teewee.setPoint(4, sf::Vector2f(100.0f, 50.0f));
+	teewee.setPoint(5, sf::Vector2f(150.0f, 50.0f));
+	teewee.setPoint(6, sf::Vector2f(150.0f, 100.0f));
+	teewee.setPoint(7, sf::Vector2f(0.0f, 100.0f));
+	teewee.setOrigin(75.0f, 50.f);
+	teewee.scale(0.5f, 0.5f);
+	teewee.setPosition(200.0f, 200.0f);
+
+	teewee.setFillColor(sf::Color::Red);
+
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -78,11 +116,20 @@ int main()
 
 				text_mouse_pos_x.setString(text_pre_pos_x + std::to_string(event.mouseMove.x)); // std::to_string(mouse_pos_x) leads to .0000000 precision
 				text_mouse_pos_y.setString(text_pre_pos_y + std::to_string(event.mouseMove.y));
+
+			}
+			if (event.type == sf::Event::MouseButtonPressed)
+			{
+				std::cout << "Rotate!\n";
+				teewee.rotate(90);
 			}
 		}
 
 		window.clear(sf::Color::Black);
 
+		window.draw(teewee);
+		window.draw(z_cleveland);
+		//window.draw(z_rhode);
 		window.draw(text_mouse_pos_x);
 		window.draw(text_mouse_pos_y);
 
