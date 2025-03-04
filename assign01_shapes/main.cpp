@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 
 //#include <SFML/System.hpp>
@@ -13,8 +14,10 @@ int main()
 
 	sf::CircleShape circle(25);
 	circle.setPosition(50.0f, 50.0f);
-	float velo_x{ 0.05f };
-	float velo_y{ 0.01f };
+	float velo_x{ 0.2f };
+	float velo_y{ 0.0f };
+
+	sf::Vector2f point{ 1280.0f, 50.0f };
 
 	while (window.isOpen())
 	{
@@ -27,7 +30,16 @@ int main()
 				window.close();
 			}
 		}
-		circle.setPosition(circle.getPosition().x + velo_x, circle.getPosition().y + velo_y);
+
+		if (circle.getGlobalBounds().contains(point))
+		{
+			std::puts("Hit!!");
+			circle.setPosition(circle.getPosition().x - velo_x, circle.getPosition().y - velo_y);
+		}
+		else
+		{
+			circle.setPosition(circle.getPosition().x + velo_x, circle.getPosition().y + velo_y);
+		}
 
 		window.clear(sf::Color(0, 0, 0));
 		window.draw(circle);
