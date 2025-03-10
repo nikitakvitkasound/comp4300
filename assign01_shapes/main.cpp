@@ -1,16 +1,19 @@
 #include <iostream>
 #include <string>
 
-//#include <SFML/System.hpp>
-//#include <SFML/Window.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
 int main()
 {
-	unsigned int window_width{ 1280 };
-	unsigned int window_height{ 720 };
-	std::string window_name{ "Assignment01_Shapes" };
-	sf::RenderWindow window(sf::VideoMode(window_width, window_height), window_name);
+	const unsigned int WINDOW_WIDTH{ 1280 };
+	const unsigned int WINDOW_HEIGHT{ 720 };
+	const std::string WINDOW_NAME{ "Assignment01_Shapes" };
+	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_NAME);
+
+	float dt;
+	sf::Clock dt_clock;
 
 	sf::Keyboard::Key input_up{ sf::Keyboard::W };
 	sf::Keyboard::Key input_left{ sf::Keyboard::A };
@@ -19,65 +22,70 @@ int main()
 
 
 
-	sf::RectangleShape shape_01{ sf::Vector2f{ 25.0f, 25.0f } };
+	sf::RectangleShape shape_01{ sf::Vector2f{ 100.0f, 100.0f } };
 	shape_01.setPosition(50.0f, 50.0f);
-	shape_01.rotate(45);
-	
-	sf::RectangleShape shape_02{ sf::Vector2f{ 25.0f, 25.0f } };
-	shape_02.setPosition(250.0f, 175.0f);
-	shape_02.setFillColor(sf::Color::Red);
-	
-	
-	float velo_x{ 10.0f };
-	float velo_y{ 10.0f };
 
+	float movement_speed{ 100.0f };
+	float scale_speed{ 5.0f };
+	sf::Vector2f velocity;
 
 	while (window.isOpen())
 	{
+		dt = dt_clock.restart().asSeconds();
+
 		sf::Event event;
-			
-		window.clear(sf::Color(0, 0, 0));
-		
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
 			{
 				window.close();
 			}
-			if (event.type == sf::Event::KeyPressed)
-			{
-				if (event.key.code == input_up)
-				{
-					shape_01.setPosition(shape_01.getPosition().x, shape_01.getPosition().y - velo_y);
-					std::cout << "Up\n";
-				}
-				if (event.key.code == input_left) 
-				{
-					shape_01.setPosition(shape_01.getPosition().x - velo_x, shape_01.getPosition().y);
-					std::cout << "Left!\n";
-				}
-				if (event.key.code == input_down)
-				{
-					shape_01.setPosition(shape_01.getPosition().x, shape_01.getPosition().y + velo_y);
-					std::cout << "Down!\n";
-				}
-				if (event.key.code == input_right)
-				{
-					shape_01.setPosition(shape_01.getPosition().x + velo_x, shape_01.getPosition().y);
-					std::cout << "Right!\n";
-				}
-				if (shape_01.getGlobalBounds().intersects(shape_02.getGlobalBounds()))
-				{
-					std::cout << "Hit!";
-				}
-				std::cout << shape_01.getPosition().x << ' ' << shape_01.getPosition().y << '\n';
-			}
 		}
 
-		window.draw(shape_01);
-		window.draw(shape_02);
-		window.display();
+		velocity.x = 0.0f;
+		velocity.y = 0.0f;
+		if (sf::Keyboard::isKeyPressed(input_up))
+		{
+			velocity.y += -movement_speed * dt * scale_speed;
+		}
+		if (sf::Keyboard::isKeyPressed(input_left))
+		{
+			velocity.x += -movement_speed * dt * scale_speed;
+		}
+		if (sf::Keyboard::isKeyPressed(input_down))
+		{
+			velocity.y += movement_speed * dt * scale_speed;
+		}
+		if (sf::Keyboard::isKeyPressed(input_right))
+		{
+			velocity.x += movement_speed * dt * scale_speed;
+		}
+		shape_01.move(velocity);
 
+		if (shape_01.getPosition().y < 0.0f)
+		{
+			shape_01.setPosition(shape_01.getPosition().x, 0.0f);
+		}
+		if (shape_01.getPosition().x < 0.0f)
+		{
+			shape_01.setPosition(0, shape_01.getPosition().y);
+		}
+		if (shape_01.getPosition().y + shape_01.getGlobalBounds().height > WINDOW_HEIGHT)
+		{
+			shape_01.setPosition(shape_01.getPosition().x, WINDOW_HEIGHT - shape_01.getGlobalBounds().height);
+		}
+		if (shape_01.getPosition().x + shape_01.getGlobalBounds().width > WINDOW_WIDTH)
+		{
+			shape_01.setPosition(WINDOW_WIDTH - shape_01.getGlobalBounds().width, shape_01.getPosition().y);
+		}
+
+
+		// Render
+
+		window.clear();
+		window.draw(shape_01);
+		window.display();
 	}
+
 	return 0;
 }
