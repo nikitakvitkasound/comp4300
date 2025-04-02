@@ -1,97 +1,104 @@
 #include <iostream>
 #include <string>
-#include <array>
-#include <vector>
 
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
+static sf::Vector2f getTextCenter(const sf::Text& text);
 
+void checkCollisionWindowBoarder(const sf::RenderWindow& window, const sf::Shape& shape, sf::Vector2f& movement_vector);
 
 
 int main()
 {
-	const unsigned int WINDOW_WIDTH{ 1280 };
-	const unsigned int WINDOW_HEIGHT{ 720 };
-	const std::string WINDOW_NAME{ "Assignment01_Shapes" };
-	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_NAME);
+	const unsigned int WINDOW_WIDTH{ 800 };
+	const unsigned int WINDOW_HEIGHT{ 600 };
+	const std::string WINDOW_NAME{ "Assignment 01: Shapes" };
+	const std::string ADDRESS_FONT_FILE{ "media/font/helvetica.ttf" };
 
+
+	sf::RenderWindow window{ sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), WINDOW_NAME };
+	window.setFramerateLimit(60);
+	sf::Clock clock;
+	float dt{};
+	float velocity{ 300.0f };
+	
 	sf::Font font;
-	if (!font.loadFromFile("media/font/helvetica.ttf"))
+	if (!font.loadFromFile(ADDRESS_FONT_FILE))
 	{
-		std::cerr << "[ERROR]: Can't load the font, check path to the .ttf file!\n";
+		std::cerr << "Can't Load Font File From: " << ADDRESS_FONT_FILE << "\n";
 		return -1;
 	}
-	sf::Text text;
-	text.setFont(font);
-	text.setCharacterSize(18);
-	text.setFillColor(sf::Color(255, 255, 255));
-	text.setString("RRed");
-
-	sf::RectangleShape rectangle_01{ sf::Vector2f{ 100.0f, 100.0f } };
-	rectangle_01.setPosition(0.0f, 0.0f);
-	rectangle_01.setFillColor(sf::Color::Red);
-	sf::Vector2f velocity_01{ -1.0f, -2.0f };
-
-
-	//sf::CircleShape circle_01{ 5.0f, 30 };
-	//circle_01.setPosition(28.0f, 37.0f);
-	//circle_01.setFillColor(sf::Color::Blue);
-	//sf::Vector2f velocity_02{ 2.0f, -1.0f };
-
+	sf::Text text_01;
+	text_01.setFont(font);
+	text_01.setCharacterSize(36);
+	text_01.setFillColor(sf::Color::Black);
+	text_01.setString("Feed");
+	text_01.setOrigin(getTextCenter(text_01));
 	
-	//text.setPosition(circle_01.getPosition().x + (circle_01.getGlobalBounds().width - text.getGlobalBounds().width) * 0.5f, 
-	//	circle_01.getPosition().y + (circle_01.getGlobalBounds().height * 0.5f - text.getGlobalBounds().height));
-	
-	float velocity_scale{ 0.05f };
-	
-	while (window.isOpen())
-	{
+	sf::RectangleShape rect_01{ {100.0f, 100.0f} };
+	rect_01.setFillColor(sf::Color(219, 252, 208));
+	rect_01.setPosition(400, 300);
+	sf::Vector2f move_vector{ -0.70f, 0.5f };
+
+	while (window.isOpen()) {
+		//auto dt{ clock.restart().asSeconds() };
 		sf::Event event;
-		while (window.pollEvent(event))
+
+		while (window.pollEvent(event)) 
 		{
 			if (event.type == sf::Event::Closed)
 			{
 				window.close();
 			}
 		}
-
-		window.clear();
-
-		//for (auto& shape : shapes)
+		dt = clock.restart().asSeconds();
+		//if (rect_01.getPosition().x < 0 || (rect_01.getPosition().x + rect_01.getGlobalBounds().width) > window.getView().getSize().x)
 		//{
-		//	if (shape.shape.getPosition().x < 0.0f || shape.shape.getPosition().x + shape.shape.getGlobalBounds().width > WINDOW_WIDTH)
-		//	{
-		//		shape.velo.x *= -1.0f;
-		//	}
-		//	if (shape.shape.getPosition().y < 0.0f || shape.shape.getPosition().y + shape.shape.getGlobalBounds().height > WINDOW_HEIGHT)
-		//	{
-		//		shape.velo.y *= -1.0f;
-		//	}
-		//	shape.shape.move(shape.velo * velocity_scale);
-		//	window.draw(shape.shape);
+		//	move_vector.x *= -1;
 		//}
+		//if (rect_01.getPosition().y < 0 || (rect_01.getPosition().y + rect_01.getGlobalBounds().height) > window.getView().getSize().y)
+		//{
+		//	move_vector.y *= -1;
+		//}
+		checkCollisionWindowBoarder(window, rect_01, move_vector);
 
-		if (rectangle_01.getPosition().x < 0.0f || rectangle_01.getPosition().x + rectangle_01.getGlobalBounds().width > WINDOW_WIDTH)
-		{
-			velocity_01.x *= -1.0f;
-		}
-		if (rectangle_01.getPosition().y < 0.0f || rectangle_01.getPosition().y + rectangle_01.getGlobalBounds().height > WINDOW_HEIGHT)
-		{
-			velocity_01.y *= -1.0f;
-		}
+		rect_01.move(move_vector * dt * velocity);
+		text_01.setPosition(rect_01.getPosition() + rect_01.getGlobalBounds().getSize() * 0.5f);
 
-		rectangle_01.move(velocity_01 * velocity_scale);
 
-		text.setPosition(rectangle_01.getPosition().x + (rectangle_01.getGlobalBounds().width - text.getGlobalBounds().width) * 0.5f,
-			rectangle_01.getPosition().y + (rectangle_01.getGlobalBounds().height * 0.5f - text.getGlobalBounds().height));
-
-		window.draw(rectangle_01);
-		window.draw(text);
+		window.clear(sf::Color(194, 178, 171));
+		window.draw(rect_01);
+		window.draw(text_01);
 
 		window.display();
+		//std::cout << "dt:: " << dt << '\n';
 	}
 
 	return 0;
+}
+
+
+
+
+
+// - - - - - Definition - - - - - //
+
+
+static sf::Vector2f getTextCenter(const sf::Text& text)
+{
+	return { (text.getGlobalBounds().getSize() * 0.5f) + text.getLocalBounds().getPosition() };
+}
+
+void checkCollisionWindowBoarder(const sf::RenderWindow& window, const sf::Shape& shape, sf::Vector2f& movement_vector)
+{
+	if (shape.getPosition().x < 0 || (shape.getPosition().x + shape.getGlobalBounds().width) > window.getView().getSize().x)
+	{
+		movement_vector.x *= -1;
+	}
+	if (shape.getPosition().y < 0 || (shape.getPosition().y + shape.getGlobalBounds().height) > window.getView().getSize().y)
+	{
+		movement_vector.y *= -1;
+	}
 }
