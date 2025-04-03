@@ -6,6 +6,9 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
+#include "imgui.h"
+#include "imgui-SFML.h"
+	
 static sf::Vector2f getTextCenter(const sf::Text& text);
 void checkCollisionWindowBoarder(const sf::RenderWindow& window, const sf::Shape& shape, sf::Vector2f& movement_vector);
 
@@ -142,7 +145,6 @@ int main()
 			fin >> rectangle_size.x;
 			fin >> rectangle_size.y;
 			rectangle.shape.setSize(rectangle_size);
-			std::cout << circle_radius << '*';
 
 			rectangles.push_back(rectangle);
 			break;
@@ -153,21 +155,27 @@ int main()
 	}
 	
 	sf::RenderWindow window{ sf::VideoMode(window_width, window_height), window_name };
-	sf::Clock clock;
+	ImGui::SFML::Init(window);
+	sf::Clock delta_clock;
 	float dt{};
 
 	while (window.isOpen()) {
 		sf::Event event;
-		dt = clock.restart().asSeconds();
-
+		dt = delta_clock.restart().asSeconds();
+		
 		while (window.pollEvent(event)) 
 		{
+			ImGui::SFML::ProcessEvent(window, event);
 			if (event.type == sf::Event::Closed)
 			{
 				window.close();
 			}
 		}
-		
+		ImGui::SFML::Update(window, delta_clock.restart());
+		ImGui::Begin("Window");
+		ImGui::Text("Hello ImGui!");
+		ImGui::End();
+
 		window.clear();	
 		for (auto& c : circles)
 		{
@@ -187,9 +195,11 @@ int main()
 			window.draw(r.shape);
 			window.draw(r.name);
 		}
+		ImGui::SFML::Render(window);
 		window.display();
 	}
-
+	
+	ImGui::SFML::Shutdown();
 	return 0;
 }
 
